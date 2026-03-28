@@ -80,7 +80,7 @@ char *q2admin_realloc (char *oldmem, int newsize)
 	*(int *)newmem = newsize;
 	newmem += sizeof(int);
 	
-	q2a_memcpy(newmem, oldmem, newsize - oldsize);
+	q2a_memcpy(newmem, oldmem, oldsize);
 	
 	gi.TagFree(start);
 	
@@ -125,18 +125,16 @@ char *Info_ValueForKey(char *s, char *key)
 			s++;
 			
 			o = value[valueindex];
-			
+
 			while (*s != '\\' && *s)
 				{
-					if (!*s)
-						return "";
 					*o++ = *s++;
 				}
 			*o = 0;
-			
+
 			if (!q2a_strcmp (key, pkey) )
 				return value[valueindex];
-				
+
 			if (!*s)
 				return "";
 			s++;

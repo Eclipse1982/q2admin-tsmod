@@ -88,14 +88,12 @@ qboolean ReadCheckVarFile(char *checkvarname)
 					if ( *cp == 'C')
 					{
 						checkvarList[maxcheckvars].type = CV_CONSTANT;
-						continue;
 					}
 					else if ( *cp == 'R')
 					{
 						checkvarList[maxcheckvars].type = CV_RANGE;
-						continue;
 					}
-						
+
 					cp += 3;
 					SKIPBLANK(cp);
 					
@@ -141,8 +139,10 @@ qboolean ReadCheckVarFile(char *checkvarname)
 								
 							cp++;
 							cp = processstring(checkvarList[maxcheckvars].value, cp, sizeof(checkvarList[maxcheckvars].value) - 1, '\"');
+							maxcheckvars++;
+							if(maxcheckvars >= CHECKVAR_MAX) break;
 							continue;
-						}	
+						}
 					else if (checkvarList[maxcheckvars].type == CV_RANGE)
 						{
 							char rangevalue[50];
@@ -182,7 +182,9 @@ qboolean ReadCheckVarFile(char *checkvarname)
 							cp = processstring(rangevalue, cp, sizeof(rangevalue) - 1, '\"');
 								
 							checkvarList[maxcheckvars].upper = q2a_atof(rangevalue);
-								
+
+							maxcheckvars++;
+							if(maxcheckvars >= CHECKVAR_MAX) break;
 							continue;
 						}
 						

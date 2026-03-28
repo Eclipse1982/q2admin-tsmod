@@ -31,6 +31,28 @@ void addCmdQueue(int  client, byte command, float timeout, unsigned long data, c
 {
 	char tmptext[128];	//UPDATE
 
+	if (client < 0 || client >= (int)maxclients->value)
+	{
+		return;
+	}
+
+	if (proxyinfo[client].maxCmds >= ALLOWED_MAXCMDS)
+	{
+		return;
+	}
+
+//*** UPDATE START ***
+	if ( proxyinfo[client].maxCmds >= ALLOWED_MAXCMDS_SAFETY)
+	{
+		proxyinfo[client].clientcommand |= CCMD_KICKED;
+		gi.bprintf (PRINT_HIGH, "%s tried to flood the server.\n", proxyinfo[client].name);
+		snprintf(tmptext, sizeof(tmptext), "kick %d\n", client);
+		//need to log
+		gi.AddCommandString(tmptext);
+		return;
+    }
+//*** UPDATE END ***
+
 	proxyinfo[client].cmdQueue[proxyinfo[client].maxCmds].command = command;
 	proxyinfo[client].cmdQueue[proxyinfo[client].maxCmds].timeout = ltime + timeout;
 	proxyinfo[client].cmdQueue[proxyinfo[client].maxCmds].data = data;
@@ -41,17 +63,6 @@ void addCmdQueue(int  client, byte command, float timeout, unsigned long data, c
 	{
 		gi.cprintf (NULL, PRINT_HIGH, "%s is being disconnected. %s", proxyinfo[client].name, str);
 	}
-
-//*** UPDATE START ***
-	if ( proxyinfo[client].maxCmds >= ALLOWED_MAXCMDS_SAFETY)
-	{
-		proxyinfo[client].clientcommand |= CCMD_KICKED;
-		gi.bprintf (PRINT_HIGH, "%s tried to flood the server.\n", proxyinfo[client].name);
-		sprintf(tmptext, "kick %d\n", client);
-		//need to log
-		gi.AddCommandString(tmptext);
-    }
-//*** UPDATE END ***
 }
 
 qboolean getCommandFromQueue(int client, byte *command, unsigned long *data, char **str)

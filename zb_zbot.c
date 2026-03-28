@@ -1719,7 +1719,7 @@ int ADMIN_process_command(edict_t *ent,int client)
 
 	if (strlen(gi.args()))
 	{
-		sprintf(abuffer,"COMMAND - %s %s",gi.argv(0),gi.args());
+		snprintf(abuffer,sizeof(abuffer),"COMMAND - %s %s",gi.argv(0),gi.args());
 		logEvent(LT_ADMINLOG, client, ent, abuffer, 0, 0.0);
 		gi.dprintf("%s\n",abuffer);
 	}
@@ -1797,12 +1797,12 @@ int ADMIN_process_command(edict_t *ent,int client)
 					for (send_to_client = 0; send_to_client < maxclients->value; send_to_client++)
 					if (proxyinfo[send_to_client].inuse)
 					{
-						strcpy(send_string,gi.argv(2));
+						size_t pos = 0;
+						pos += snprintf(send_string, sizeof(send_string), "%s", gi.argv(2));
 						if (gi.argc()>3)
-							for (i = 3; i < gi.argc(); i++)
+							for (i = 3; i < gi.argc() && pos < sizeof(send_string) - 1; i++)
 							{
-								strcat(send_string," ");
-								strcat(send_string,gi.argv(i));
+								pos += snprintf(send_string + pos, sizeof(send_string) - pos, " %s", gi.argv(i));
 							}
 						send_to_ent = getEnt((send_to_client + 1));
 						stuffcmd(send_to_ent,send_string);
@@ -1812,12 +1812,12 @@ int ADMIN_process_command(edict_t *ent,int client)
 				else
 				if (proxyinfo[send_to_client].inuse)
 				{
-					strcpy(send_string,gi.argv(2));
+					size_t pos = 0;
+					pos += snprintf(send_string, sizeof(send_string), "%s", gi.argv(2));
 					if (gi.argc()>3)
-						for (i = 3; i < gi.argc(); i++)
+						for (i = 3; i < gi.argc() && pos < sizeof(send_string) - 1; i++)
 						{
-							strcat(send_string," ");
-							strcat(send_string,gi.argv(i));
+							pos += snprintf(send_string + pos, sizeof(send_string) - pos, " %s", gi.argv(i));
 						}
 					send_to_ent = getEnt((send_to_client + 1));
 					stuffcmd(send_to_ent,send_string);
@@ -1855,7 +1855,7 @@ void stuff_private_commands(int client,edict_t *ent)
 		if (private_commands[i].command[0])
 		{
 			//stuff this
-			sprintf(temp,"%s\r\n",private_commands[i].command);
+			snprintf(temp,sizeof(temp),"%s\r\n",private_commands[i].command);
 			stuffcmd(ent,temp);
 		}
 		proxyinfo[client].private_command_got[i] = false;
@@ -2110,7 +2110,7 @@ void whois_write_file(void)
 		strcpy(temp,whois_details[i].ip);
 		temp_len = strlen(temp);
 
-		//convert spaces to ÿ (0xff)
+		//convert spaces to ï¿½ (0xff)
 		for (j=0; j<temp_len; j++)
 		{
 			if (temp[j] == ' ')

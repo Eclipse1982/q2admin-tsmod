@@ -198,23 +198,23 @@ qboolean loadLogListFile(char *filename)
 							SKIPBLANK(cp);
 							
 							lognum = q2a_atoi(cp);
-							
-							if(lognum >= 1 || lognum <= 32)
+
+							if(lognum >= 1 && lognum <= 32)
 								{
 									lognum--;
-									
+
 									while(isdigit(*cp))
 										{
 											cp++;
 										}
-										
+
 									SKIPBLANK(cp);
-									
+
 									if(startContains(cp, "MOD"))
 										{
 											cp += 3;
 											SKIPBLANK(cp);
-											
+
 											logFiles[lognum].mod = TRUE;
 										}
 									else
@@ -272,27 +272,27 @@ qboolean loadLogListFile(char *filename)
 													lognum = q2a_atoi(cp);
 													logtypes[i].log = FALSE;
 													
-													if(lognum >= 1 || lognum <= 32)
+													if(lognum >= 1 && lognum <= 32)
 														{
 															lognum--;
-															
+
 															while(isdigit(*cp))
 																{
 																	cp++;
 																}
-																
+
 															SKIPBLANK(cp);
-															
+
 															logtypes[i].logfiles |= (0x1 << lognum);
-															
+
 															while(*cp == '+')
 																{
 																	cp++;
 																	SKIPBLANK(cp);
-																	
+
 																	lognum = q2a_atoi(cp);
-																	
-																	if(lognum >= 1 || lognum <= 32)
+
+																	if(lognum >= 1 && lognum <= 32)
 																		{
 																			lognum--;
 																			
@@ -630,7 +630,6 @@ void displayLogFileCont(edict_t *ent, int client, long logfilereadpos)
 					gi.cprintf (ent, PRINT_HIGH, "End Logfile %d (%s)\n", logNum + 1, logFiles[logNum].filename);
 				}
 				
-			fprintf(logfilePtr, "%s\n", logline);
 			fclose(logfilePtr);
 		}
 	else
@@ -938,32 +937,32 @@ void logeventRun(int startarg, edict_t *ent, int client)
 									
 									lognum = q2a_atoi(cmd);
 									
-									if(lognum >= 1 || lognum <= 32)
+									if(lognum >= 1 && lognum <= 32)
 										{
 											lognum--;
-											
+
 											while(isdigit(*cmd))
 												{
 													cmd++;
 												}
-												
+
 											SKIPBLANK(cmd);
-											
+
 											logfiles = (0x1 << lognum);
-											
+
 											while(*cmd == '+')
 												{
 													cmd++;
 													SKIPBLANK(cmd);
-													
+
 													if(*cmd == 0)
 														{
 															break;
 														}
-														
+
 													lognum = q2a_atoi(cmd);
-													
-													if(lognum >= 1 || lognum <= 32)
+
+													if(lognum >= 1 && lognum <= 32)
 														{
 															lognum--;
 															
